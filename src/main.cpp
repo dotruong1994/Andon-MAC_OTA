@@ -19,7 +19,7 @@ CRGB leds[NUM_LEDS];
 #define RST_PIN 22
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
-#define FIRMWARE_VERSION "1.1"
+#define FIRMWARE_VERSION "1.5" // ngày 04/09/2024 version mới là 1.5
 
 bool checkLEDVal; // bi?n ?i?u khi?n ch?p t?t khi ??a th? vao RFID
 int updateDeadAlive_time = 600000;
