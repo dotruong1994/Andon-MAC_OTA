@@ -702,7 +702,7 @@ void setup()
   button2.onPressed(leader);
   button3.onPressed(material);
   button4.onPressed(call_tpm);
-  button3.onPressedFor(4000, resetFunction);
+  button2.onPressedFor(4000, resetFunction);
   ID_check();
 
   WiFi.mode(WIFI_STA);
