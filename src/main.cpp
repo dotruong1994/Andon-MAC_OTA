@@ -19,7 +19,7 @@ CRGB leds[NUM_LEDS];
 #define RST_PIN 22
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
-#define FIRMWARE_VERSION "1.5" // ngày 04/09/2024 version mới là 1.5
+#define FIRMWARE_VERSION "1.6" // ngày 04/09/2024 version mới là 1.6
 
 bool checkLEDVal; // bi?n ?i?u khi?n ch?p t?t khi ??a th? vao RFID
 int updateDeadAlive_time = 600000;
@@ -399,11 +399,35 @@ void send_rfid_callTPM()
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
       String payload = http.getString();
-      Serial.println(payload);
-      state = 3;
-      EEPROM.write(0, state);
-      EEPROM.commit();
-      Serial.println("State saved in flash memory");
+      const char *payloadJsonTPM = payload.c_str();
+
+      StaticJsonDocument<96> doc;
+
+      DeserializationError error = deserializeJson(doc, payloadJsonTPM);
+
+      if (error)
+      {
+        Serial.print("deserializeJson() failed: ");
+        Serial.println(error.c_str());
+        return;
+      }
+
+      int statusCode = doc["statusCode"];   // 1
+      const char *message = doc["message"]; // "Success"
+      Serial.println(statusCode);
+      Serial.println(message);
+      if (strcmp(getOK, message) == 0)
+      {
+        Serial.println(payload);
+        state = 3;
+        EEPROM.write(0, state);
+        EEPROM.commit();
+        Serial.println("State saved in flash memory");
+      }
+      else
+      {
+        Serial.println("Send no success");
+      }
     }
     else
     {
@@ -612,6 +636,23 @@ void Steve_checkSPIConnection()
   }
 }
 
+void resetFunction()
+{
+  Serial.println("ESP reset in 2s");
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  delay(100);
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  delay(100);
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  ESP.restart();
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -661,6 +702,7 @@ void setup()
   button2.onPressed(leader);
   button3.onPressed(material);
   button4.onPressed(call_tpm);
+  button3.onPressedFor(4000, resetFunction);
   ID_check();
 
   WiFi.mode(WIFI_STA);
