@@ -517,6 +517,10 @@ void send_rfid_Receive()
 void call_tpm()
 {
   light_lock = 0;
+  if (countState > 0)
+  {
+    return;
+  }
   Serial.println("Got it");
   if (!mfrc522.PICC_IsNewCardPresent())
   {
@@ -702,7 +706,7 @@ void setup()
   button2.onPressed(leader);
   button3.onPressed(material);
   button4.onPressed(call_tpm);
-  button3.onPressedFor(4000, resetFunction);
+  button2.onPressedFor(4000, resetFunction);
   ID_check();
 
   WiFi.mode(WIFI_STA);
