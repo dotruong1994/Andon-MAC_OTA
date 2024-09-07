@@ -517,6 +517,10 @@ void send_rfid_Receive()
 void call_tpm()
 {
   light_lock = 0;
+  if (countState > 0)
+  {
+    return;
+  }
   Serial.println("Got it");
   if (!mfrc522.PICC_IsNewCardPresent())
   {
