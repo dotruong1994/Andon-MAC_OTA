@@ -19,7 +19,7 @@ CRGB leds[NUM_LEDS];
 #define RST_PIN 22
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
-#define FIRMWARE_VERSION "1.7" // ngày 04/09/2024 version mới là 1.6
+#define FIRMWARE_VERSION "1.9" // ngày 04/09/2024 version mới là 1.6
 
 bool checkLEDVal; // bi?n ?i?u khi?n ch?p t?t khi ??a th? vao RFID
 int updateDeadAlive_time = 600000;
@@ -732,11 +732,11 @@ void setup()
   button3.begin();
   button4.begin();
   button1.onPressed(receive_order);
+  button1.onPressedFor(4000, resetEEprom);
   button2.onPressed(leader);
   button2.onPressedFor(4000, resetFunction);
   button3.onPressed(material);
   button4.onPressed(call_tpm);
-  button4.onPressedFor(5000, resetEEprom);
   ID_check();
 
   WiFi.mode(WIFI_STA);
