@@ -643,6 +643,31 @@ void Steve_checkSPIConnection()
     ESP.restart();
   }
 }
+void resetEEprom()
+{
+  state = 0;
+  countState = 0;
+  light_lock = 0;
+  EEPROM.write(0, state);
+  EEPROM.write(1, countState);
+  EEPROM.commit();
+  Serial.print("countState: ");
+  Serial.println(countState);
+  Serial.println("State saved in flash memory");
+  Serial.println("ESP reset in 2s");
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  delay(100);
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  delay(100);
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  ESP.restart();
+}
 
 void resetFunction()
 {
@@ -708,9 +733,10 @@ void setup()
   button4.begin();
   button1.onPressed(receive_order);
   button2.onPressed(leader);
+  button2.onPressedFor(4000, resetFunction);
   button3.onPressed(material);
   button4.onPressed(call_tpm);
-  button2.onPressedFor(4000, resetFunction);
+  button4.onPressedFor(5000, resetEEprom);
   ID_check();
 
   WiFi.mode(WIFI_STA);
