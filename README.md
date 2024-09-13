@@ -12,9 +12,9 @@ Gw 10.101.103.254
 DNS: 172.21.130.1 - 2  
 
 ***********************
-Trường hợp code demo trong src này đã sử dụng 250 và gắn ở A8 <-----------
-Dòng code số 23:    IPAddress local_IP(10, 101, 103, 250); // đổi IP này để cho mấy con fake MAC
-Dòng code số 35:    #define FIRMWARE_VERSION "2.0"  // dòng này chủ yếu dùng cho OTA chính quy
+Trường hợp code demo trong src này đã sử dụng 250 và gắn ở A8 <-----------  
+Dòng code số 23:    IPAddress local_IP(10, 101, 103, 250); // đổi IP này để cho mấy con fake MAC  
+Dòng code số 35:    #define FIRMWARE_VERSION "2.0"  // dòng này chủ yếu dùng cho OTA chính quy  
 
 Dòng code số 77:    uint8_t newMACAddress[] = {0x9C, 0x9C, 0x1F, 0xE3, 0xFE, 0x6C};    // đổi cái MAC này theo cái con ban đầu phải fake, trường hợp này là con bên A8
 
