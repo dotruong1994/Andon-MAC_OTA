@@ -13,13 +13,26 @@ CRGB leds[NUM_LEDS];
 #include <EasyButton.h>
 #include <ArduinoJson.h>
 
+// OTA library
+#include <ElegantOTA.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
+
+// Static IP
+WebServer OTAserver(80);
+IPAddress local_IP(10, 101, 103, 250);
+IPAddress gateway(10, 101, 103, 254);
+IPAddress subnet(255, 255, 248, 0);
+IPAddress primaryDNS(172, 21, 130, 1);   // optional
+IPAddress secondaryDNS(172, 21, 130, 2); // optional
+
 #include <MFRC522.h>
 #include <SPI.h>
 #define SS_PIN 21 // kh?i dung cho module RFID
 #define RST_PIN 22
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
-#define FIRMWARE_VERSION "1.9" // ngày 04/09/2024 version mới là 1.6
+#define FIRMWARE_VERSION "2.0" // ngày 04/09/2024 version mới là 1.6
 
 bool checkLEDVal; // bi?n ?i?u khi?n ch?p t?t khi ??a th? vao RFID
 int updateDeadAlive_time = 600000;
@@ -60,8 +73,8 @@ String rfid;
 // String callalive = "http://172.21.143.74:8080/cmmsservice/repairCheckList/healthCheck/VY/";
 // Your Domain name with URL path or IP address with path
 
-// 08:3A:F2:51:01:3C
-// uint8_t newMACAddress[] = {0x08, 0x3A, 0xF2, 0x51, 0x01, 0x3C};
+// 9C:9C:1F:E3:FE:6C
+uint8_t newMACAddress[] = {0x9C, 0x9C, 0x1F, 0xE3, 0xFE, 0x6C};
 // MAC
 
 // String serverName = "http://172.21.149.109:8005/aco_issue";
@@ -742,21 +755,37 @@ void setup()
   WiFi.mode(WIFI_STA);
 
   // MAC
-  // esp_wifi_set_mac(WIFI_IF_STA, &newMACAddress[0]);
-  // Serial.print("[NEW] ESP32 Board MAC Address:  ");
-  // Serial.println(WiFi.macAddress());
+  esp_wifi_set_mac(WIFI_IF_STA, &newMACAddress[0]);
+  Serial.print("[NEW] ESP32 Board MAC Address:  ");
+  Serial.println(WiFi.macAddress());
   // MAC
-
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS))
+  {
+    Serial.println("STA Failed to configure");
+  }
   WiFi.begin(ssid);
   while (wifi_check == 0)
   {
     check_WIFI();
   }
+
+  // khởi tạo chạy OTA
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+  OTAserver.on("/", []()
+               { OTAserver.send(200, "text/plain", "Hi! This is ElegantOTA Demo."); });
+  ElegantOTA.begin(&OTAserver);
+  OTAserver.begin();
+  Serial.println("HTTP server started");
   dead_alive();
-  update_check();
+
+  // ---------------------Vì phiên bản này update OTA tĩnh nên không cần check ----------------------------
+  // update_check();
 }
 void loop()
 {
+  OTAserver.handleClient();
+  ElegantOTA.loop();
   check_RFID();
   if (checkLEDVal == 1)
   {
