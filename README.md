@@ -1,4 +1,4 @@
-Cách sử dụng code này: 
+## Cách sử dụng code này: 
 Vì chương trình này chạy OTA độc lập để fake MAC, nên mỗi còn sẽ có một IP riêng mặc định 
 
 ***********************
@@ -7,9 +7,9 @@ IT 10.101.103.201 --> 252
 // lựa chọn trong các IP này theo thứ tự từ lớn đến nhỏ   
 // lưu ý: ko dùng từ 210 trở về 201 ( vì đã có máy khác dùng rồi )
 
-SM 255.255.248.0
-Gw 10.101.103.254
-DNS: 172.21.130.1 - 2
+SM 255.255.248.0  
+Gw 10.101.103.254  
+DNS: 172.21.130.1 - 2  
 
 ***********************
 Trường hợp code demo trong src này đã sử dụng 250 và gắn ở A8 <-----------
